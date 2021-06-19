@@ -128,7 +128,6 @@ public class BytesTest {
         assertEquals(3, arr[0]);
         assertEquals(2, arr[1]);
         assertEquals(1, arr[2]);
-
     }
 
 }
