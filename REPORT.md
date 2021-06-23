@@ -1,9 +1,38 @@
 # 项目报告
+
+## 小组成员
+
+- 谢建福；
+- 李宇恒；
+
+## 测试环境
+
+- Windows 10；
+- JDK 8；
+- Maven；
+- Intellij IDEA；
+
+## 测试工具
+
+### JUnit 4
+
+>  JUnit是一个Java语言的单元测试框架。它由Kent Beck和Erich Gamma建立，逐渐成为源于Kent Beck的sUnit的xUnit家族中最为成功的一个。 JUnit有它自己的JUnit扩展生态圈。多数Java的开发环境都已经集成了JUnit作为单元测试的工具。
+
+### Jacoco
+
+> Jacoco是一个开源的代码覆盖率工具，可以嵌入到Ant 、Maven中，并提供了EclEmma Eclipse插件,也可以使用JavaAgent技术监控Java程序。很多第三方的工具提供了对Jacoco的集成，如sonar、Jenkins等。
+
 ## 测试内容
-- com.google.common.base.CaseFormat
-- com.google.common.hash.Crc32cHashFunctionTest
-- com.google.common.primitives.BooleansTest
-- com.google.common.primitives.BytesTest
+
+- 谢建福
+  - com.google.common.base.CaseFormat；
+  - com.google.common.hash.Crc32cHashFunctionTest；
+  - com.google.common.primitives.BooleansTest；
+  - com.google.common.primitives.BytesTest；
+- 李宇恒
+  - ；
+  - ；
+  - ；
 
 ## 测试标准
 
@@ -18,9 +47,13 @@
 
 ### com.google.common.base.CaseFormat
 
-#### 测试结果
+#### 覆盖情况
 
 ![image-20210619104530591](REPORT.assets/image-20210619104530591.png)
+
+#### 测试结果
+
+![image-20210623104142663](REPORT.assets/image-20210623104142663.png)
 
 #### 测试对象
 
@@ -59,10 +92,12 @@
 
 - 测试代码
 
+  - 分析代码，提供所有特殊格式转换的测试样例；
+  
   - ```java
     @Test
     public void to() {
-        assertEquals("helloWorld", CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL, "hello-world"));
+        assertEquals("helloWorld", CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL, "hello-world"));	
         assertEquals("HelloWorld", CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, "hello-world"));
         assertEquals("hello-world", CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_HYPHEN, "hello-world"));
         assertEquals("hello_world", CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_UNDERSCORE, "hello-world"));
@@ -96,6 +131,8 @@
 
 - 测试代码
 
+  - 获取转换器，并验证转换器的功能是否匹配；
+  
   - ```java
     @Test
     public void converterTo() {
@@ -155,6 +192,8 @@
 
 - 测试代码
 
+  - 验证字符串为空和不为空时函数功能是否正常；
+  
   - ```java
     assertEquals("", CaseFormat.LOWER_CAMEL.normalizeWord(""));
     assertEquals("Helloworld", CaseFormat.LOWER_CAMEL.normalizeWord("HElloWorld"));
@@ -194,9 +233,13 @@
 
 ### com.google.common.hash.Crc32cHashFunctionTest
 
-#### 测试结果
+#### 覆盖情况
 
 ![image-20210619104655999](REPORT.assets/image-20210619104655999.png)
+
+#### 测试结果
+
+![image-20210623104200696](REPORT.assets/image-20210623104200696.png)
 
 #### 测试对象
 
@@ -229,35 +272,12 @@
   
   static final class Crc32cHasher extends AbstractStreamingHasher {
   
-      /*
-       * The striding algorithm works roughly as follows: it is universally the case that
-       * CRC(x ^ y) == CRC(x) ^ CRC(y).  The approach we take is to break the message as follows,
-       * with each letter representing a 4-byte word: ABCDABCDABCDABCD... and to calculate
-       * CRC(A000A000A000...), CRC(0B000B000B...), CRC(00C000C000C...), CRC(000D000D000D...)
-       * and then to XOR them together.  The STRIDE_TABLE enables us to hash an int followed by 12
-       * zero bytes (3 ints), while the BYTE_TABLE is for advancing one byte at a time.
-       * This algorithm is due to the paper "Everything we know about CRC but [are] afraid to forget"
-       * by Kadatch and Jenkins, 2010.
-       */
-  
       Crc32cHasher() {
         super(16);
       }
   
       private boolean finished = false;
   
-      /*
-       * This trick allows us to avoid having separate states for "first four ints" and "all other
-       * four int chunks."  The state we want after the first four bytes is
-       *
-       * crc0 = ~int0
-       * crc1 = int1
-       * crc2 = int2
-       * crc3 = int3
-       *
-       * ...so we set crc0 so that computeForWord(crc0) = -1 and xoring it with the first int
-       * gives us the desired result.  computeForWord(0) == 0, so all the others do the right thing.
-       */
       private int crc0 = INVERSE_COMPUTE_FOR_WORD_OF_ALL_1S;
       private int crc1 = 0;
       private int crc2 = 0;
@@ -299,8 +319,7 @@
       @Override
       protected HashCode makeHash() {
         if (!finished) {
-          // processRemaining does teardown we always want to do -- the folding together of the four
-          // rolling CRCs.  So we call it on an empty ByteBuffer if we didn't already.
+  
           processRemaining(EMPTY);
         }
         return HashCode.fromInt(~crc0);
@@ -313,7 +332,6 @@
       static final int[][] STRIDE_TABLE = {
         ...
       };
-      // Value x picked so computeForWord(x) == ~0, found by exhaustive search.
       static final int INVERSE_COMPUTE_FOR_WORD_OF_ALL_1S = 0xeee3ddcd;
   
       static int computeForWord(int word) {
@@ -337,6 +355,8 @@
   
 - 测试代码
 
+  - 验证hasher的每一个方法是否正常；
+  
   - ```java
     public void newHasher() {
         Hasher hasher = new Crc32cHashFunction().newHasher();
@@ -382,9 +402,13 @@
 
 ### com.google.common.primitives.BooleansTest
 
+#### 覆盖情况
+
+![image-20210623105516622](REPORT.assets/image-20210623105516622.png)
+
 #### 测试结果
 
-![image-20210619105105436](REPORT.assets/image-20210619105105436.png)
+![image-20210623104244133](REPORT.assets/image-20210623104244133.png)
 
 #### 测试对象
 
@@ -534,6 +558,8 @@
 
 - 测试代码
 
+  - 枚举全部四种输入情况进行测试
+  
   - ```java
     @Test
     public void testCompare() {
@@ -561,6 +587,8 @@
 
 - 测试代码
 
+  - 分别测试 存在false和true / 仅存在false / 仅存在true 三种情况；
+  
   - ```java
     @Test
     public void testContains() {
@@ -620,6 +648,8 @@
   
 - 测试代码
 
+  - 分别验证元素/序列存在数组和不存在数组两种情况；
+  
   - ```java
     @Test
     public void testIndexOf() {
@@ -651,6 +681,8 @@
 
 - 测试代码
 
+  - 分别验证元素存在和不存在序列两种情况；
+  
   - ```java
     @Test
     public void testLastIndexOf() {
@@ -716,17 +748,29 @@
 
 - 测试代码
 
+  - 分别测试新长度小于原长和大于等于原长两种情况；
+  
   - ```java
-    @Test
-    public void testEnsureCapacity() {
-        boolean[] list = new boolean[] {
-                false, true, false
-        };
-        boolean[] res = Booleans.ensureCapacity(list, 5, 3);
-        assertEquals(8, res.length);
-        res = Booleans.ensureCapacity(list, 2, 3);
-        assertSame(list, res);
-    }
+        @Test
+        public void testEnsureCapacity() {
+            boolean[] list = new boolean[] {
+                    false, true, false
+            };
+            boolean[] res = Booleans.ensureCapacity(list, 5, 3);
+            assertEquals(8, res.length);
+            res = Booleans.ensureCapacity(list, 2, 3);
+            assertSame(list, res);
+            try {
+                res = Booleans.ensureCapacity(list, -1, 3);
+                fail();
+            } catch (IllegalArgumentException e) {
+            }
+            try {
+                res = Booleans.ensureCapacity(list, 1, -3);
+                fail();
+            } catch (IllegalArgumentException e) {
+            }
+        }
     ```
 
 ##### join()
@@ -752,6 +796,8 @@
 
 - 测试代码
 
+  - 分别测试空和非空两种情况；
+  
   - ```java
     @Test
     public void testJoin() {
@@ -792,6 +838,8 @@
 
 - 测试代码
 
+  - 验证comparator的功能；
+  
   - ```java
     @Test
     public void testLexicographicalComparator() {
@@ -826,6 +874,8 @@
 
 - 测试代码
 
+  -  通过验证array的长度来测试功能；
+  
   - ```java
     @Test
     public void testToArray() {
@@ -859,36 +909,37 @@
   - 转换成BooleanArrayAsList类型，并测试BooleanArrayAsList类的方法
 
   - ```java
-    @Test
-    public void testAsList() {
-        List<Boolean> res = Booleans.asList(false,true,false);
-        assertEquals(3, res.size());
-        assertFalse(res.isEmpty());
-        assertTrue(res.contains(false));
-        assertFalse(res.contains(0));
-        assertEquals(1, res.indexOf(true));
-        assertEquals(2, res.lastIndexOf(false));
-        res.set(1, false);
-        assertEquals(-1, res.indexOf(true));
-        assertEquals(-1, res.lastIndexOf(true));
-        assertEquals(-1, res.indexOf(1));
-        assertEquals(-1, res.lastIndexOf(1));
-        assertEquals(Boolean.FALSE, res.get(1));
-        assertEquals(0, res.subList(0,0).size());
-        assertEquals(Boolean.FALSE, res.subList(0,1).get(0));
-        assertEquals(1, res.subList(0,1).size());
-        assertTrue(res.equals(res));
-        assertTrue(res.equals(Booleans.asList(false, false, false)));
-        assertFalse(res.equals(Booleans.asList(true, false, false)));
-        assertFalse(res.equals(Booleans.asList(false, false)));
-        assertFalse(res.equals(new boolean[]{false, false}));
-        assertEquals(1258132, res.hashCode());
-        assertEquals("[false, false, false]", res.toString());
-        res = Booleans.asList();
-        assertEquals(0, res.size());
-        assertTrue(res.isEmpty());
-        assertEquals("[true, true]", Booleans.asList(true, true).toString());
-    }
+        @Test
+        public void testAsList() {
+            List<Boolean> res = Booleans.asList(false,true,false);
+            assertEquals(3, res.size());
+            assertFalse(res.isEmpty());
+            assertTrue(res.contains(false));
+            assertFalse(res.contains(0));
+            assertFalse(Booleans.asList(true, true).contains(false));
+            assertEquals(1, res.indexOf(true));
+            assertEquals(2, res.lastIndexOf(false));
+            res.set(1, false);
+            assertEquals(-1, res.indexOf(true));
+            assertEquals(-1, res.lastIndexOf(true));
+            assertEquals(-1, res.indexOf(1));
+            assertEquals(-1, res.lastIndexOf(1));
+            assertEquals(Boolean.FALSE, res.get(1));
+            assertEquals(0, res.subList(0,0).size());
+            assertEquals(Boolean.FALSE, res.subList(0,1).get(0));
+            assertEquals(1, res.subList(0,1).size());
+            assertTrue(res.equals(res));
+            assertTrue(res.equals(Booleans.asList(false, false, false)));
+            assertFalse(res.equals(Booleans.asList(true, false, false)));
+            assertFalse(res.equals(Booleans.asList(false, false)));
+            assertFalse(res.equals(new boolean[]{false, false}));
+            assertEquals(1258132, res.hashCode());
+            assertEquals("[false, false, false]", res.toString());
+            res = Booleans.asList();
+            assertEquals(0, res.size());
+            assertTrue(res.isEmpty());
+            assertEquals("[true, true]", Booleans.asList(true, true).toString());
+        }
     ```
 
 ##### countTrue()
@@ -939,6 +990,8 @@
 
 - 测试代码
 
+  - 测试翻转之后每个位置的元素值和长度是否正确；
+  
   - ```java
     @Test
     public void testReverse() {
@@ -954,9 +1007,13 @@
 ### com.google.common.primitives.BytesTest
 
 
+#### 覆盖情况
+
+![image-20210623105600532](REPORT.assets/image-20210623105600532.png)
+
 #### 测试结果
 
-![image-20210619105055934](REPORT.assets/image-20210619105055934.png)
+![image-20210623104308366](REPORT.assets/image-20210623104308366.png)
 
 #### 测试对象
 
@@ -1409,3 +1466,50 @@ private byte[] empty = new byte[]{};
         assertEquals(1, arr[2]);
     }
     ```
+
+## 为什么Crc32cHashFunctionTest没有达到 100% 的覆盖率
+
+- 存在部分代码不对外开放，并且出现该问题的条件苛刻、情况罕见，很难通过编写输入参数覆盖相关代码；
+
+- 例如，
+
+  - 下面代码为Crc32cHashFunctionTest的protected方法process中部分代码，该部分代码未被覆盖
+
+      - ```java
+        if (finished) {
+                throw new IllegalStateException(
+                    "The behavior of calling any method after calling hash() is undefined.");
+              }
+        ```
+
+  - 其中finished为对象内部private修饰符修饰的变量
+
+    - ```java
+      private boolean finished = false;
+      ```
+
+
+### 改进方法
+
+- 使用反射的方式，修改类内部private变量的数值，进行测试；
+
+## 无法提高测试覆盖率的原因
+
+### Line Coverage
+
+1. 存在死代码，该部分死代码永远不会被执行；
+
+### Branch Coverage
+
+1. 存在分支要求的条件矛盾，无法被满足；
+
+   - eg.
+
+     - ```java
+       if(A == 1) {
+       	if(A == 0) {
+       		print('hello world!');
+       	}
+       }
+       ```
+

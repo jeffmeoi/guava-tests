@@ -130,6 +130,16 @@ public class BooleansTest {
         assertEquals(8, res.length);
         res = Booleans.ensureCapacity(list, 2, 3);
         assertSame(list, res);
+        try {
+            res = Booleans.ensureCapacity(list, -1, 3);
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            res = Booleans.ensureCapacity(list, 1, -3);
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     @Test
@@ -167,6 +177,7 @@ public class BooleansTest {
         assertFalse(res.isEmpty());
         assertTrue(res.contains(false));
         assertFalse(res.contains(0));
+        assertFalse(Booleans.asList(true, true).contains(false));
         assertEquals(1, res.indexOf(true));
         assertEquals(2, res.lastIndexOf(false));
         res.set(1, false);
