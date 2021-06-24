@@ -1,4 +1,4 @@
-# 项目报告
+# 项目报告（谢建福）
 
 ## 小组成员
 
@@ -30,14 +30,15 @@
   - com.google.common.primitives.BooleansTest；
   - com.google.common.primitives.BytesTest；
 - 李宇恒
-  - ；
-  - ；
-  - ；
+  - com.google.common.primitives.CharsTest；
+  - com.google.common.primitives.DoublesTest；
 
 ## 测试标准
 
 - Line Coverage: above **90%**
-- Branch/Decision Coverage: above **90%**
+- Condition/Clause Coverage: above **90%**
+
+> Jacoco中的Branch Coverage实际上是Condition Coverage
 
 ## 测试方式
 
